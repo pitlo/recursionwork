@@ -1,0 +1,162 @@
+;;; 1
+;;; FUNCTION NAME:delnth(L)
+;;; DESCRIPTION:  a function to delete the n-th element of a list
+;;; NOTES: Only works on inputs always longer than n
+
+(defun delnth (L n)
+(if (equal n 1) (rest L)
+(cons (first L) (delnth (rest L) (- n 1)))))
+
+(print(delnth '(1 2 (3 4) 5) 3))
+
+;;; 2
+;;; FUNCTION NAME: dispnth(L n)
+;;; DESCRIPTION: a function to display the n-th element of a list
+;;; NOTES: Only works on inputs longer than n
+
+(defun dispnth(L n)
+(if (equal n 1) (first L)
+(dispnth (rest L) (- n 1))))
+
+(print(dispnth '(1 (2 3) 4 5) 2))
+
+;;; 3
+;;; FUNCTION NAME: remv(i L)
+;;; DESCRIPTION:  a function to remove elements from a list (including all multiple appearance)
+(defun remv(i L) (if (null L) nil
+(if (equal (first L) i) (remv i (rest L))
+(cons (first L) (remv i (rest L))))))
+
+(print(remv 'a '(a (b) a c)))
+
+;;; 4
+;;; FUNCTION NAME: remv2(i L)
+;;; DESCRIPTION: a function to remove given list elements from a list (including multiple appearance)
+(defun remv2(i L) (if (null L) nil
+(if (equal (first L) i) (remv i (rest L))
+(cons (first L) (remv i (rest L))))))
+
+(print(remv2 '(a b) '(a b (a b) c)))
+
+;;; 5
+;;; FUNCTION NAME:remvdub (L)
+;;; DESCRIPTION:  a function to remove duplicate elements from a list
+(defun remvdub (L)
+(if (null L) nil
+(if (equal (rest L) nil) (cons (first L) nil)
+(cons (first L) (remvdub(remv (first L) (rest L)))))))
+
+(print (remvdub '(a b a c b a)))
+
+;;; 6
+;;; FUNCTION NAME:remvdub2 
+;;; DESCRIPTION: a function to remove duplicate elements (single element or lists) from a list
+;;; NOTES: <comments of the function>
+
+(defun remvdub2 (L)
+(if (null L) nil
+(if (equal (rest L) nil) (cons (first L) nil)
+(cons (first L) (remvdub2(remv (first L) (rest L)))))))
+
+(print(remvdub2 '(a b (a) c b (a))))
+
+;;; 7
+;;; FUNCTION NAME:min2 
+;;; DESCRIPTION: a function to compute the second  smallest of number of an integer list.
+;;; NOTES: I can't seem to get this one to work.  I know that at some point I'm returning
+;;; a list when I need to return just an integer but I can't figure out how to fix that
+
+(defun min2 (L) 
+(cond
+((and (equal (rest(rest L)) nil) (> (first L) (first(rest L)))) (first L))
+((equal (rest(rest L)) nil) (first(rest L)))
+((and (> (first L) (first(rest L))) (> (first L) (first(rest(rest L))))) (min2(rest L)))
+((and (> (first(rest L))) (>(first(rest L)) (first(rest(rest L))))) (min2(cons (first L) (rest(rest L)))))           
+(t (min2 (cons (first L) (first(rest L)) (rest(rest(rest L))))))))
+
+;;; 8
+;;; FUNCTION NAME:inde 
+;;; DESCRIPTION: a function which returns the index (start from 1) of the occurrence of a given value
+;;; NOTES: Utilizes a helper function, inde2
+
+(defun inde2(n L c)
+(if (null L) nil
+(if (equal n (first L)) (cons c (inde2 n (rest L) (+ c 1)))
+(inde2 n (rest L) (+ c 1)))))
+
+(defun inde (n L) (inde2 n L 1))
+
+(print (inde 1 '(1 2 1 1 2 2 1)))
+
+;;; 9
+;;; FUNCTION NAME:nele 
+;;; DESCRIPTION: a function nele which repeats each element in a list c times.
+;;; NOTES: Utilizes a helper function, neleHelper
+
+(defun neleHelper(L c i)
+(if (null L) nil
+(if (> i c) (neleHelper (rest L) c 1)
+(cons (first L) (neleHelper L c (+ i 1))))))
+
+(defun nele (L c)
+(if (null L) nil
+(neleHelper L c 1)))
+
+(print(nele '(1 3 5) 3))
+
+;;; 10
+;;; FUNCTION NAME:occr 
+;;; DESCRIPTION: a function to display the occurrence of an element of a list, or nil if the list is empty.
+;;; NOTES: Utilizes two helper functions, scrub and cou
+
+(defun scrub(ele L) (if (null L) NIL
+(if (= ele (first L)) (scrub ele (rest L))
+(cons (first L) (scrub ele (rest L))))))
+
+(defun cou(ele L)
+(if (null L) 0
+(if (= ele (first L)) (+ 1 (cou ele (rest L)))
+(cou ele (rest L)))))
+
+(defun occr(L)
+(if (null L) nil
+(cons (list(first L) (cou (first L) L)) (occr (scrub (first L) L)))))
+
+(print (occr '(1 2 1 2 3 2)))
+
+;;; 11
+;;; FUNCTION NAME:mergesort
+;;; DESCRIPTION: A function that sorts a list with the mergesort method
+;;; NOTES: I started this but I couldn't get the halve function right and knew everything wouldn't work if I didn't get it right
+;;; It's close but it doesn't work with odd numbers of arguments and doesn't return a list of two lists but it splits the original
+;;; list into a list containing a list of half of the elements and then just the other elements not in a list.
+;;; The merge function is named mrg.  It works.  I think the final mergesort function works as well but I can't be sure because
+;;; I think it's getting broken when I use the halve function.
+
+(defun halve (L)
+(if (null L) (cons nil nil))
+(if (null (rest L)) (cons (list(first L)) nil))
+(cons (cons (first L) (first(halve (rest(rest L))))) (cons (first(rest L)) (rest(halve (rest(rest L)))))))
+
+(defun mrg(L1 L2)
+(if (null L1) L2
+(if (< (first L1) (first L2)) (cons (first L1) (mrg (rest L1) L2))
+(cons (first L2) (mrg L1 (rest L2))))))
+
+(defun mergesort(L)
+(if (null L) nil
+(mrg(mergesort (first(halve L))) (mergesort (rest (halve L))))))
+
+
+;;; 12
+;;; FUNCTION NAME:qs(L) 
+;;; DESCRIPTION: A function that sorts a list with the quicksort method
+;;; NOTES: remove-if-not functions as the filter for this function, returning a sequence of elements with a test applied to them
+
+(defun qs (L)
+(if (<= (length L) 1)   L
+(append	(qs (remove-if-not #'(lambda (x) (< x (first L))) L))
+(remove-if-not #'(lambda (x) (= x (first L))) L)
+(qs (remove-if-not #'(lambda (x) (> x (first L))) L)))))
+		
+(print (qs '(4 2 3 1 7 3 5 3 6)))
